@@ -11,6 +11,7 @@ from app.services.google_api import (
     set_user_permissions, spreadsheets_create,
     spreadsheets_update_value
 )
+from app.services import constants as const
 
 router = APIRouter()
 
@@ -19,7 +20,7 @@ router = APIRouter()
     '/',
     response_model=GoogleApiReport,
     dependencies=[Depends(current_superuser)],
-    summary='Создать отчет по проектам'
+    summary=const.GET_GOOGLE_REPORT
 )
 async def get_report(
         session: AsyncSession = Depends(get_async_session),

@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.crud import charity_project_crud
 from app.models import CharityProject
 from app.schemas import CharityProjectUpdateSchema
+from app.services import constants as const
 
 
 async def check_charity_project_exists(
@@ -19,7 +20,7 @@ async def check_charity_project_exists(
     if charity_project is None:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,
-            detail='Проекта с указанным id не существует!'
+            detail=const.ERR_NOT_FOUND % charity_project_id
         )
     return charity_project
 
@@ -36,7 +37,7 @@ async def check_charity_project_name_duplilcate(
     if charity_project is not None:
         raise HTTPException(
             status_code=HTTPStatus.BAD_REQUEST,
-            detail='Проект с таким именем уже существует!'
+            detail=const.ERR_NAME_EXIST
         )
 
 
@@ -54,7 +55,7 @@ async def check_charity_project_before_delete(
     if charity_project.invested_amount > 0:
         raise HTTPException(
             status_code=HTTPStatus.BAD_REQUEST,
-            detail=('В проект были внесены средства, не подлежит удалению!')
+            detail=const.ERR_HAS_INVEST
         )
     return charity_project
 
@@ -77,14 +78,14 @@ async def check_charity_project_before_update(
     if charity_project.close_date is not None:
         raise HTTPException(
             status_code=HTTPStatus.BAD_REQUEST,
-            detail='Закрытый проект нельзя редактировать!'
+            detail=const.ERR_PROJECT_CLOSED
         )
     full_amount_update_value = charity_project_in.full_amount
     if (full_amount_update_value and
        charity_project.invested_amount > full_amount_update_value):
         raise HTTPException(
             status_code=HTTPStatus.BAD_REQUEST,
-            detail='Нельзя установить требуемую cумму меньше уже вложенной'
+            detail=const.ERR_FULL_AMOUNT
         )
     name_update_value = charity_project_in.name
     await check_charity_project_name_duplilcate(

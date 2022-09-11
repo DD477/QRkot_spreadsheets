@@ -12,6 +12,7 @@ from app.core.config import settings
 from app.core.db import get_async_session
 from app.models import User
 from app.schemas import UserCreate
+from app.services import constants as const
 
 
 async def get_user_db(session: AsyncSession = Depends(get_async_session)):
@@ -27,11 +28,11 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
     ) -> None:
         if len(password) < 3:
             raise InvalidPasswordException(
-                reason="Password should be at least 3 characters"
+                reason=const.ERR_LEN_PASSWORD
             )
         if user.email in password:
             raise InvalidPasswordException(
-                reason="Password should not contain e-mail"
+                reason=const.ERR_EMAIL_IN_PASSWORD
             )
 
 
@@ -45,7 +46,9 @@ bearer_transport = BearerTransport(tokenUrl='/auth/jwt/login')
 
 
 def get_jwt_stategy() -> JWTStrategy:
-    return JWTStrategy(secret=settings.secret, lifetime_seconds=3600)
+    return JWTStrategy(
+        secret=settings.secret, lifetime_seconds=const.JWT_LIFE_TIME
+    )
 
 
 auth_backend = AuthenticationBackend(

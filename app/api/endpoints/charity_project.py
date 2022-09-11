@@ -10,6 +10,7 @@ from app.crud import charity_project_crud
 from app.schemas import (CharityProjectCreateSchema, CharityProjectDBSchema,
                          CharityProjectUpdateSchema)
 from app.services.funds_allocation import allocate_donation_funds
+from app.services import constants as const
 
 router = APIRouter()
 
@@ -18,7 +19,7 @@ router = APIRouter()
     '/',
     response_model=list[CharityProjectDBSchema],
     response_model_exclude_none=True,
-    summary='Список всех проектов'
+    summary=const.GET_ALL_CHARITY_PROJECTS
 )
 async def get_all_charity_projects(
     session: AsyncSession = Depends(get_async_session)
@@ -35,7 +36,7 @@ async def get_all_charity_projects(
     response_model=CharityProjectDBSchema,
     response_model_exclude_none=True,
     dependencies=[Depends(current_superuser)],
-    summary='Создать проект'
+    summary=const.CREATE_CHARITY_PROJECTS
 )
 async def create_charity_project(
     charity_project: CharityProjectCreateSchema,
@@ -64,7 +65,7 @@ async def create_charity_project(
     '/{project_id}',
     response_model=CharityProjectDBSchema,
     dependencies=[Depends(current_superuser)],
-    summary='Удалить проект'
+    summary=const.DELETE_CHARITY_PROJECTS
 )
 async def delete_charity_project(
     project_id: int,
@@ -88,7 +89,7 @@ async def delete_charity_project(
     '/{project_id}',
     response_model=CharityProjectDBSchema,
     dependencies=[Depends(current_superuser)],
-    summary='Редактировать проект'
+    summary=const.UPDATE_CHARITY_PROJECT
 )
 async def update_charity_project(
     project_id: int,

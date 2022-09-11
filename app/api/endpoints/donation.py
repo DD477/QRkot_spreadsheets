@@ -8,6 +8,7 @@ from app.models import User
 from app.schemas import (AllDonationsDBSchema, DonationCreateSchema,
                          DonationDBSchema)
 from app.services.funds_allocation import allocate_donation_funds
+from app.services import constants as const
 
 router = APIRouter()
 
@@ -17,7 +18,7 @@ router = APIRouter()
     response_model=list[AllDonationsDBSchema],
     response_model_exclude_none=True,
     dependencies=[Depends(current_superuser)],
-    summary='Список пожертвований'
+    summary=const.GET_ALL_DONATIONS
 )
 async def get_all_donations(
     session: AsyncSession = Depends(get_async_session)
@@ -33,7 +34,7 @@ async def get_all_donations(
     '/',
     response_model=DonationDBSchema,
     response_model_exclude_none=True,
-    summary='Создать пожертвование'
+    summary=const.CREATE_DONATION
 )
 async def create_donation(
     donation_in: DonationCreateSchema,
@@ -57,14 +58,14 @@ async def create_donation(
 @router.get(
     '/my',
     response_model=list[DonationDBSchema],
-    summary='Список пожертвований текущего пользователя'
+    summary=const.GET_MY_DONATIONS
 )
 async def get_user_donations(
     session: AsyncSession = Depends(get_async_session),
     user: User = Depends(current_user)
 ):
     """
-    Досутпно для авторизированного пользователя.
+    Доступно для авторизированного пользователя.
     Возвращает список пожертвований пользователя, выполняющего запрос.
     """
     return await donation_crud.get_user_donations(user=user, session=session)
