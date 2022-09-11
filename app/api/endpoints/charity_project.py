@@ -9,8 +9,8 @@ from app.core.user import current_superuser
 from app.crud import charity_project_crud
 from app.schemas import (CharityProjectCreateSchema, CharityProjectDBSchema,
                          CharityProjectUpdateSchema)
-from app.services.funds_allocation import allocate_donation_funds
 from app.services import constants as const
+from app.services.funds_allocation import allocate_donation_funds
 
 router = APIRouter()
 

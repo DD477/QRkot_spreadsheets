@@ -7,8 +7,8 @@ from app.crud import donation_crud
 from app.models import User
 from app.schemas import (AllDonationsDBSchema, DonationCreateSchema,
                          DonationDBSchema)
-from app.services.funds_allocation import allocate_donation_funds
 from app.services import constants as const
+from app.services.funds_allocation import allocate_donation_funds
 
 router = APIRouter()
 
